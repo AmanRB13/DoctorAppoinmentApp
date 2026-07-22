@@ -71,3 +71,6 @@ build/
 
 # macOS
 .DS_Store
+
+serviceAccount.json
+firebase-adminsdk*.json
