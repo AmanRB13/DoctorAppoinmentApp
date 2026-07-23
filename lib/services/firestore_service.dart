@@ -1,6 +1,7 @@
 
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 
 class FirestoreService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -11,8 +12,10 @@ class FirestoreService {
     required String specialty,
     required String date,
     required String time,
+    required String doctorId,
   }) async {
     await _firestore.collection("Appoinments").add({
+      "doctorId": doctorId,
       "userId": userId,
       "doctorName": doctorName,
       "speciality": specialty,
@@ -21,6 +24,23 @@ class FirestoreService {
       "status": "Booked",
       "createdAt": Timestamp.now(),
     });
+  }
+  Future<List<String>> getBookedSlots({
+    required String doctorId,
+    required String date,
+  })async{
+    final snapshot = await _firestore.collection('Appoinments')
+    .where("doctorId", isEqualTo: doctorId)
+      .where("date", isEqualTo: date)
+      .where("status", isEqualTo: "Booked")
+      .get();
+
+    List<String> bookedSlots = [];
+    for(var doc in snapshot.docs){
+      bookedSlots.add(doc['time']);
+    }
+    return bookedSlots;
+
   }
 
   Stream<QuerySnapshot> getAppointments(String userId) {
@@ -32,6 +52,22 @@ class FirestoreService {
  Stream<QuerySnapshot> getDoctors() {
   return _firestore.collection("123456").snapshots();
 }
+Future<List<String>> getWorkingDays(String doctorId)async{
+  final doc = await _firestore.collection('123456').doc(doctorId).get();
+  if(!doc.exists){
+    return [];
+  }
+  return List<String>.from(doc['workingDays']);
+}
+Future<List<String>> getLeaveDates(String doctorId) async {
+  final doc =
+      await _firestore.collection("123456").doc(doctorId).get();
+
+  if (!doc.exists) return [];
+
+  return List<String>.from(doc["leaveDates"]);
+}
+
 Future<void> rescheduleAppointment({
   required String id,
   required String date,

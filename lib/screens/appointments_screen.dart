@@ -4,14 +4,21 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import '../services/firestore_service.dart';
 
-class AppointmentsScreen extends StatelessWidget {
+class AppointmentsScreen extends StatefulWidget {
   const AppointmentsScreen({super.key});
 
   @override
+  State<AppointmentsScreen> createState() => _AppointmentsScreenState();
+}
+
+class _AppointmentsScreenState extends State<AppointmentsScreen> {
+  @override
   Widget build(BuildContext context) {
     final firestore = FirestoreService();
+  
 
     final userId = FirebaseAuth.instance.currentUser!.uid;
+   
     
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
@@ -132,16 +139,66 @@ class AppointmentsScreen extends StatelessWidget {
     lastDate: DateTime(2030),
   );
 
-  TimeOfDay? newTime = await showTimePicker(
-    context: context,
-    initialTime: TimeOfDay.now(),
-  );
+  if(newDate==null){
+    return;
+  }
 
-  if (newDate != null && newTime != null) {
+  final doctorDoc = await FirebaseFirestore.instance.
+  collection('123456').doc(appointment['doctorId']).get();
+
+  List<String> slots = List<String>.from(doctorDoc['availableSlots']);
+  String? selectedslot;
+   final bool? save = await showDialog<bool>(
+  context: context,
+  builder: (context) {
+    return StatefulBuilder(
+      builder: (context, setDialogState) {
+        return AlertDialog(
+          title: const Text("Select a Time Slot"),
+          content: Wrap(
+            spacing: 10,
+            runSpacing: 10,
+            children: slots.map((slot) {
+              final selected = slot == selectedslot;
+
+              return ChoiceChip(
+                label: Text(slot),
+                selected: selected,
+                selectedColor: Colors.green,
+                onSelected: (_) {
+                  setDialogState(() {
+                    selectedslot = slot;
+                  });
+                },
+              );
+            }).toList(),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text("Cancel"),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: const Text("Save"),
+            ),
+          ],
+        );
+      },
+    );
+  },
+);
+  
+
+
+    if(save != true){
+      return;
+
+    }
     await firestore.rescheduleAppointment(
       id: docId,
       date: "${newDate.day}/${newDate.month}/${newDate.year}",
-      time: newTime.format(context),
+      time: selectedslot!,
     );
 
     ScaffoldMessenger.of(context).showSnackBar(
@@ -149,7 +206,7 @@ class AppointmentsScreen extends StatelessWidget {
         content: Text("Appointment Rescheduled"),
       ),
     );
-  }
+  
 },
               child: Text('Edit')),
           ),

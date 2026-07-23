@@ -18,13 +18,18 @@ final Map<String, dynamic> doctor;
 
   @override
   State<DoctorDetailsScreen> createState() => _DoctorDetailsScreenState();
-
- static Widget _timeChip(String time) {
-    return Chip(
-      label: Text(time),
-      backgroundColor: Colors.blue.shade100,
-    );
-  }
+static Widget _timeChip(String time) {
+  return Chip(
+    label: Text(
+      time,
+      style: const TextStyle(
+        color: Colors.black,
+      ),
+    ),
+    backgroundColor: Colors.white,
+  );
+}
+ 
  
 }
 
@@ -32,6 +37,9 @@ class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
   final TextEditingController reviewController = TextEditingController();
   double rating = 0.0;
   final FirestoreService firestoreService = FirestoreService();
+   DateTime? selectedDate;
+  String?  selectedTime;
+ 
   @override
   Widget build(BuildContext context) {
 
@@ -59,6 +67,7 @@ class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
             Text(
               widget.doctor["name"]??"",
               style: const TextStyle(
+                color: Colors.black,
                 fontSize: 26,
                 fontWeight: FontWeight.bold,
               ),
@@ -70,7 +79,7 @@ class _DoctorDetailsScreenState extends State<DoctorDetailsScreen> {
               widget.doctor["speciality"]??"",
               style: const TextStyle(
                 fontSize: 18,
-                color: Colors.grey,
+                color: Colors.brown,
               ),
             ),
 
@@ -153,6 +162,7 @@ Card(
               child: Text(
                 "About Doctor",
                 style: TextStyle(
+                  color: Colors.black,
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),
@@ -163,7 +173,7 @@ Card(
 
             Text(
   widget.doctor["description"]??"",
-  style: const TextStyle(fontSize: 16),
+  style: const TextStyle(fontSize: 16,color: Colors.black),
 ),
 
             const SizedBox(height: 25),
@@ -171,8 +181,9 @@ Card(
             const Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                "Available Time Slots",
+                "Initial Available Time Slots",
                 style: TextStyle(
+                  color: Colors.black,
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),
@@ -180,18 +191,19 @@ Card(
             ),
 
             const SizedBox(height: 15),
+Wrap(
+    
+    spacing: 10,
+    runSpacing: 10,
+    
+    children: (widget.doctor["availableSlots"] as List)
+        .map(
+          (slot) => DoctorDetailsScreen._timeChip(slot.toString()),
+        )
+        .toList(),
+  ),
 
-            Wrap(
-              spacing: 10,
-              runSpacing: 10,
-              children: [
-                DoctorDetailsScreen._timeChip("9:00 AM"),
-                DoctorDetailsScreen._timeChip("10:30 AM"),
-                DoctorDetailsScreen._timeChip("12:00 PM"),
-                DoctorDetailsScreen._timeChip("2:00 PM"),
-                DoctorDetailsScreen._timeChip("4:00 PM"),
-              ],
-            ),
+            
 
             const SizedBox(height: 30),
 
@@ -205,6 +217,7 @@ Card(
       MaterialPageRoute(
         builder: (context) => BookingScreen(
           doctor: widget.doctor,
+          doctorId:  widget.doctorId,
         ),
       ),
     );
@@ -296,8 +309,8 @@ Card(
 
             }, 
             
-            icon: Icon(Icons.star_rate_rounded),
-            label: Text('Rate your experience'))
+            icon: Icon(Icons.star_rate_rounded,color: Colors.black,),
+            label: Text('Rate your experience',style:TextStyle(color: Colors.black),))
             
             
           ],
