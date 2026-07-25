@@ -1,21 +1,55 @@
 # 🩺 Doctor Appointment App
 
-A Flutter-based mobile application that enables users to browse doctors, book appointments, manage bookings, rate doctors, and maintain a list of favorite doctors. The application uses **Firebase Authentication** for user management and **Cloud Firestore** for cloud data storage.
+A Flutter-based mobile application that enables users to browse doctors, book appointments, manage bookings, rate doctors, and maintain a list of favorite doctors. The application uses **Firebase Authentication** for secure user management and **Cloud Firestore** for real-time cloud data storage.
+
+---
 
 ## ✨ Features
 
-- 🔐 User Authentication (Login & Signup)
-- 👨‍⚕️ Browse Doctors
-- 🔍 Search Doctors
-- 🩺 Filter Doctors by Specialty
-- 📅 Book Appointments
-- ✏️ Reschedule Appointments
-- ❌ Cancel Appointments
-- ⭐ Rate & Review Doctors
-- ❤️ Add/Remove Favorite Doctors
-- 👤 User Profile
-- ☁️ Real-time Cloud Firestore Integration
-- Light/Dark Mode
+### 🔐 Authentication
+- User Login
+- User Registration
+- Secure Firebase Authentication
+
+### 👨‍⚕️ Doctor Management
+- Browse Doctors
+- Search Doctors
+- Filter Doctors by Specialty
+- View Doctor Details
+- View Doctor Experience & Consultation Fee
+
+### 📅 Appointment Management
+- Book Appointments
+- Reschedule Appointments
+- Cancel Appointments
+- View Appointment History
+- Appointment Confirmation Dialog
+- Appointment Status Tracking
+
+### ⏰ Smart Booking System
+- Display Available Time Slots
+- Automatically Disable Already Booked Slots
+- Prevent Double Booking
+- Validate Doctor Working Days
+- Prevent Booking on Doctor Leave Dates
+- Display Doctor Working Days
+- Display Doctor Leave Dates
+- Show "No Appointment Slots Available" when applicable
+
+### ⭐ User Features
+- Rate & Review Doctors
+- Add/Remove Favorite Doctors
+- User Profile Management
+
+### ☁️ Backend
+- Firebase Authentication
+- Cloud Firestore
+- Real-time Appointment Updates
+
+### 🎨 UI
+- Material Design
+- Light/Dark Theme Support
+- Responsive Layout
 
 ---
 
@@ -74,16 +108,27 @@ lib/
 ```text
 Firestore
 │
-├── 123456                  (Doctors)
+├── 123456 (Doctors)
 │     ├── doctorId
 │     │      ├── name
 │     │      ├── speciality
 │     │      ├── experience
 │     │      ├── fee
+│     │      ├── availableSlots
+│     │      ├── WorkingDays
+│     │      ├── leaveDates
 │     │      └── reviews
 │
 ├── Appoinments
 │     ├── appointmentId
+│     │      ├── doctorId
+│     │      ├── userId
+│     │      ├── doctorName
+│     │      ├── speciality
+│     │      ├── date
+│     │      ├── time
+│     │      ├── status
+│     │      └── createdAt
 │
 └── users
       └── userId
@@ -123,7 +168,15 @@ flutter run
 
 ---
 
+## 📌 Key Highlights
 
+- Secure authentication using Firebase Authentication
+- Real-time data synchronization with Cloud Firestore
+- Intelligent appointment booking system
+- Automatic prevention of duplicate bookings
+- Doctor availability validation using working days and leave dates
+- Dynamic appointment slot management
+- Clean Material Design UI with Light & Dark themes
 
 ---
 
